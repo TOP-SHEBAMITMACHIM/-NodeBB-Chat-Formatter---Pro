@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Arial, sans-serif;
+    width: 300px;
+    background: #fff;
+    color: #222;
+    direction: rtl;
+  }
+  .header {
+    background: #1a56db;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .header-icon {
+    width: 34px; height: 34px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.15);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+  .header h1 { font-size: 13px; font-weight: bold; color: #fff; }
+  .header p  { font-size: 11px; color: rgba(255,255,255,0.75); margin-top: 2px; }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 0.6px;
+    color: #aaa;
+    text-transform: uppercase;
+    padding: 12px 16px 5px;
+  }
+
+  .site-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 16px;
+    border-bottom: 0.5px solid #f0f0f0;
+    transition: background 0.12s;
+  }
+  .site-row:last-child { border-bottom: none; }
+  .site-row:hover { background: #f7f9ff; }
+
+  .site-favicon-wrap {
+    width: 24px; height: 24px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .site-favicon {
+    width: 16px; height: 16px;
+    border-radius: 3px;
+    object-fit: contain;
+  }
+  .site-letter {
+    width: 22px; height: 22px; border-radius: 6px;
+    background: #e8f0fe; color: #1a56db;
+    font-size: 12px; font-weight: bold;
+    align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .site-info { flex: 1; min-width: 0; }
+  .site-name {
+    font-size: 13px; font-weight: bold; color: #222;
+    display: flex; align-items: center; gap: 5px; flex-wrap: wrap;
+  }
+  .site-url  { font-size: 11px; color: #bbb; margin-top: 1px; }
+
+  .here-badge {
+    font-size: 10px;
+    background: #EBF5FF;
+    color: #1a56db;
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-weight: normal;
+  }
+
+  .row-right { display: flex; align-items: center; gap: 7px; flex-shrink: 0; }
+
+  .remove-btn {
+    background: none; border: none;
+    color: #ccc; cursor: pointer;
+    font-size: 12px; padding: 3px 5px;
+    border-radius: 4px;
+    transition: color 0.15s, background 0.15s;
+    line-height: 1;
+  }
+  .remove-btn:hover { color: #e53e3e; background: #fff0f0; }
+
+  .toggle { position: relative; width: 36px; height: 20px; flex-shrink: 0; }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .slider {
+    position: absolute; inset: 0;
+    background: #ddd; border-radius: 20px;
+    cursor: pointer; transition: background 0.2s;
+  }
+  .slider:before {
+    content: '';
+    position: absolute;
+    width: 14px; height: 14px;
+    left: 3px; bottom: 3px;
+    background: white; border-radius: 50%;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  }
+  input:checked + .slider { background: #1a56db; }
+  input:checked + .slider:before { transform: translateX(16px); }
+
+  .add-section {
+    padding: 10px 16px;
+    border-top: 0.5px solid #f0f0f0;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .add-section input {
+    flex: 1;
+    border: 1px solid #e5e5e5;
+    border-radius: 7px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-family: Arial, sans-serif;
+    direction: ltr;
+    color: #333;
+    background: #fafafa;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .add-section input:focus { border-color: #1a56db; background: #fff; }
+  .add-section input::placeholder { color: #bbb; direction: rtl; text-align: right; }
+  .add-section button {
+    background: #1a56db;
+    color: white;
+    border: none;
+    border-radius: 7px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+  }
+  .add-section button:hover { background: #1446b8; }
+  .add-section button:active { background: #0f3a99; }
+
+  .footer {
+    padding: 8px 16px;
+    font-size: 10px;
+    color: #ccc;
+    text-align: center;
+    border-top: 0.5px solid #f0f0f0;
+    letter-spacing: 0.3px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-icon">✍</div>
+  <div>
+    <h1>NodeBB Chat Formatter</h1>
+    <p>סרגל עיצוב לצ'אט בפורומי NodeBB</p>
+  </div>
+</div>
+
+<div class="section-label">אתרים נתמכים</div>
+<div id="sites-list"></div>
+
+<div class="add-section">
+  <input type="text" id="new-site" placeholder="הוסף אתר (דומיין או כתובת)">
+  <button id="add-btn">+ הוסף</button>
+</div>
+
+<div class="footer">NodeBB Chat Formatter · v1.1</div>
+
+<script src="popup.js"></script>
+</body>
+</html>
